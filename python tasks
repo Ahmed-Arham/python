@@ -1,0 +1,188 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load datasets 
+company_data = pd.read_csv("Company_Sales_Data.csv")
+mall_data = pd.read_csv("Mall_Customers_Dataset.csv")
+
+sns.set(style="whitegrid")
+
+# Check for missing values in Mall Customers data
+print("Mall Customers Dataset - Missing Values:")
+print(mall_customers.isnull().sum())
+
+# Check for missing values in Company Sales data
+print("\nCompany Sales Dataset - Missing Values:")
+print(company_sales.isnull().sum())
+
+# Check for duplicates
+print("\nMall Customers Dataset - Duplicates:", mall_customers.duplicated().sum())
+print("Company Sales Dataset - Duplicates:", company_sales.duplicated().sum())
+
+# Basic statistics
+print("\nMall Customers Dataset - Statistics:")
+print(mall_customers.describe())
+
+print("\nCompany Sales Dataset - Statistics:")
+print(company_sales.describe())
+
+# Load Company Sales Data
+company_sales = pd.read_csv('Company_Sales_Data.csv')
+
+# Convert Month to categorical with proper order
+month_order = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+company_sales['Month'] = pd.Categorical(company_sales['Month'], categories=month_order, ordered=True)
+
+# Group by month and sum profit
+monthly_profit = company_sales.groupby('Month')['Profit'].sum().reset_index()
+
+# Create line plot
+plt.figure(figsize=(12, 6))
+plt.plot(monthly_profit['Month'], monthly_profit['Profit'], 
+         marker='o', linestyle='-', color='royalblue', linewidth=2)
+
+# Add titles and labels
+plt.title('Total Profit by Month (Company Growth)', fontsize=16, pad=20)
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Total Profit ($)', fontsize=12)
+plt.grid(True, linestyle='--', alpha=0.7)
+
+# Rotate x-axis labels for better readability
+plt.xticks(rotation=45)
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Create grouped bar chart for sales by product and region
+plt.figure(figsize=(12, 6))
+
+# Group data by Product and Region, then sum sales
+product_region_sales = company_sales.groupby(['Product', 'Region'])['Sales'].sum().unstack()
+
+# Plot bar chart
+product_region_sales.plot(kind='bar', width=0.8, edgecolor='black')
+
+# Add titles and labels
+plt.title('Total Sales by Product and Region', fontsize=16, pad=20)
+plt.xlabel('Product', fontsize=12)
+plt.ylabel('Total Sales ($)', fontsize=12)
+plt.xticks(rotation=0)
+
+# Add legend and grid
+plt.legend(title='Region')
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Calculate total sales by product
+product_sales = company_sales.groupby('Product')['Sales'].sum()
+
+# Create pie chart
+plt.figure(figsize=(8, 8))
+plt.pie(product_sales, 
+        labels=product_sales.index, 
+        autopct='%1.1f%%', 
+        startangle=90,
+        colors=['#ff9999','#66b3ff','#99ff99'],
+        explode=(0.05, 0.05, 0.05),
+        shadow=True)
+
+# Add title
+plt.title('Proportion of Total Sales by Product', fontsize=16, pad=20)
+
+# Equal aspect ratio ensures pie is drawn as a circle
+plt.axis('equal')
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Load Mall Customers Data
+mall_customers = pd.read_csv('Mall_Customers_Dataset.csv')
+
+# Create histogram
+plt.figure(figsize=(10, 6))
+sns.histplot(data=mall_customers, x='Age', bins=15, kde=True, color='teal')
+
+# Add titles and labels
+plt.title('Distribution of Customer Ages', fontsize=16, pad=20)
+plt.xlabel('Age', fontsize=12)
+plt.ylabel('Count', fontsize=12)
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Create box plot for annual income
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=mall_customers, y='Annual Income (k$)', color='skyblue')
+
+# Add titles and labels
+plt.title('Distribution of Annual Incomes', fontsize=16, pad=20)
+plt.ylabel('Annual Income (k$)', fontsize=12)
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Create scatter plot
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=mall_customers, 
+                x='Annual Income (k$)', 
+                y='Spending Score (1-100)',
+                hue='Gender',
+                palette={'Male': 'blue', 'Female': 'red'},
+                s=100,
+                alpha=0.7)
+
+# Add titles and labels
+plt.title('Spending Score vs Annual Income', fontsize=16, pad=20)
+plt.xlabel('Annual Income (k$)', fontsize=12)
+plt.ylabel('Spending Score (1-100)', fontsize=12)
+
+# Add grid
+plt.grid(True, linestyle='--', alpha=0.5)
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+# Create subplots for each product's monthly sales
+plt.figure(figsize=(14, 8))
+
+# Get unique products
+products = company_sales['Product'].unique()
+
+# Create a subplot for each product
+for i, product in enumerate(products, 1):
+    plt.subplot(2, 2, i)
+    
+    # Filter data for the product
+    product_data = company_sales[company_sales['Product'] == product]
+    
+    # Group by month and sum sales
+    monthly_sales = product_data.groupby('Month')['Sales'].sum().reindex(month_order)
+    
+    # Plot line
+    plt.plot(monthly_sales.index, monthly_sales.values, 
+             marker='o', linestyle='-', color=f'C{i-1}', linewidth=2)
+    
+    # Add titles and labels
+    plt.title(f'Sales Trend for {product}', fontsize=12)
+    plt.xlabel('Month', fontsize=10)
+    plt.ylabel('Sales ($)', fontsize=10)
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.xticks(rotation=45)
+
+# Adjust layout
+plt.suptitle('Monthly Sales Trends by Product', fontsize=16, y=1.02)
+plt.tight_layout()
+
+# Show plot
+plt.show()
+
